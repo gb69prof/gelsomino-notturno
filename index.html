@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -28,6 +27,35 @@
   </nav>
 
   <main>
+
+    <!-- BLOCCO IMMAGINE + VIDEO PASCOLI -->
+    <section class="section" id="pascoli-video">
+      <h2>La voce di Giovanni Pascoli</h2>
+      <p>Clicca sull’immagine per ascoltare la presentazione animata di Pascoli. Al termine del video tornerà l’immagine iniziale.</p>
+
+      <div id="video-container" style="position: relative; max-width: 600px; cursor: pointer; margin: 0 auto;">
+        <!-- IMMAGINE -->
+        <img id="pascoli-img"
+             src="assets/pascoli_video.jpg"
+             alt="Giovanni Pascoli"
+             style="width: 100%; display: block; border-radius: 8px;">
+
+        <!-- VIDEO (inizialmente nascosto) -->
+        <div id="pascoli-video-wrapper"
+             style="display: none; width: 100%; aspect-ratio: 16/9; margin-top: 1rem;">
+          <iframe id="pascoli-video"
+            width="100%" height="100%"
+            src="https://app.heygen.com/embedded-player/db43983e36904bdcb1574fe2b2622a46"
+            title="HeyGen video player"
+            frameborder="0"
+            allow="encrypted-media; fullscreen;"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </section>
+    <!-- FINE BLOCCO IMMAGINE + VIDEO -->
+
     <section id="intro" class="section">
       <h2>Perché questa poesia</h2>
       <p>
@@ -49,6 +77,7 @@
         come Pascoli trasforma un’esperienza concreta in simboli poetici.
       </p>
     </section>
+
     <section id="simbolismo" class="section">
       <h2>Pascoli simbolista dentro <em>Il gelsomino notturno</em></h2>
       <p>Giovanni Pascoli è simbolista perché trasforma ogni immagine in un significato nascosto. Nel <em>Gelsomino notturno</em> non descrive la realtà: la allude.</p>
@@ -57,7 +86,7 @@
       <h3>2. La poesia come linguaggio segreto</h3>
       <p>La natura riflette ciò che il poeta sente: la casa che bisbiglia è la famiglia alla quale Pascoli non appartiene; i nidi che dormono parlano di protezione, ma anche di solitudine. La poesia non spiega: rivela emozioni.</p>
       <h3>3. L’analogia: collegare ciò che è lontano</h3>
-      <p>Ogni immagine richiama un’altra immagine nascosta: il profumo diventa presenza degli sposi, l’alba richiama la maternità, la notte diventa il luogo dei segreti. È un codice poetico che il lettore deve decifrare.</p>
+      <p>Ogni immagine richiama un’altra immagine nascosta: il profumo diventa presenza degli sposi, l’alba richiamo la maternità, la notte diventa il luogo dei segreti. È un codice poetico che il lettore deve decifrare.</p>
       <h3>4. La musica delle parole</h3>
       <p>Allitterazioni come <em>sussurra</em>, <em>stelle</em>, <em>scala</em>, <em>spento</em> creano un’atmosfera notturna, morbida, sensuale: è la musica che dà significato.</p>
       <h3>5. Il fanciullino che osserva</h3>
@@ -334,7 +363,7 @@
         <article class="symbol-card">
           <h3>Le farfalle crepuscolari</h3>
           <p>
-            Sono anime leggere che appaiono tra i viburni al calare del sole.
+            Sono anime leggere che appaiono tra i viburni al calar del sole.
             Possono essere lette come presenza dei morti, ma anche come pensieri che svolazzano
             tra ricordo e desiderio.
           </p>
@@ -384,5 +413,39 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Gestione immagine → video → immagine per Pascoli
+    document.addEventListener('DOMContentLoaded', function () {
+      const img = document.getElementById('pascoli-img');
+      const wrapper = document.getElementById('pascoli-video-wrapper');
+      const iframe = document.getElementById('pascoli-video');
+
+      if (!img || !wrapper || !iframe) return;
+
+      let listenerAdded = false;
+
+      img.addEventListener('click', function () {
+        img.style.display = 'none';
+        wrapper.style.display = 'block';
+
+        // reset del video ogni volta che si clicca
+        const src = iframe.src;
+        iframe.src = '';
+        iframe.src = src;
+
+        // ascolta il messaggio di fine video (postMessage da HeyGen)
+        if (!listenerAdded) {
+          window.addEventListener('message', function (event) {
+            if (typeof event.data === 'string' && event.data.includes('ended')) {
+              wrapper.style.display = 'none';
+              img.style.display = 'block';
+            }
+          });
+          listenerAdded = true;
+        }
+      });
+    });
+  </script>
 </body>
 </html>
+
